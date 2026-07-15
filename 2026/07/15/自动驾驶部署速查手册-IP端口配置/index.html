@@ -1,0 +1,577 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>自动驾驶部署速查手册 — IP地址、端口、配置参数 | 陆泽榕的个人Blog</title><meta name="author" content="小陆"><meta name="copyright" content="小陆"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="基于实习部署指导文档整理，涵盖激光雷达、IMU、域控制器、DTU等所有关键IP地址、端口号、配置步骤，方便现场快速查阅。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自动驾驶部署速查手册 — IP地址、端口、配置参数">
+<meta property="og:url" content="https://lzr-yctf1883.top/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="陆泽榕的个人Blog">
+<meta property="og:description" content="基于实习部署指导文档整理，涵盖激光雷达、IMU、域控制器、DTU等所有关键IP地址、端口号、配置步骤，方便现场快速查阅。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lzr-yctf1883.top/lzr.png">
+<meta property="article:published_time" content="2026-07-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-15T01:43:24.434Z">
+<meta property="article:author" content="小陆">
+<meta property="article:tag" content="自动驾驶">
+<meta property="article:tag" content="实习">
+<meta property="article:tag" content="部署">
+<meta property="article:tag" content="速查手册">
+<meta property="article:tag" content="IP配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lzr-yctf1883.top/lzr.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "自动驾驶部署速查手册 — IP地址、端口、配置参数",
+  "url": "https://lzr-yctf1883.top/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/",
+  "image": "https://lzr-yctf1883.top/lzr.png",
+  "datePublished": "2026-07-14T16:00:00.000Z",
+  "dateModified": "2026-07-15T01:43:24.434Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "小陆",
+      "url": "https://lzr-yctf1883.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lzr-yctf1883.top/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.5"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css"><link rel="stylesheet" href="/css/custom.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '自动驾驶部署速查手册 — IP地址、端口、配置参数',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"><style id="custom-css">/* ========================================= 全站蓝绿 · 磨砂玻璃质感 粒子特效透过半透明面板可见 ========================================= */ /* ----- 核心：所有面板统一磨砂 ----- */ .card-widget, .recent-post-item, #post, #page, #archive, #category, #tag, #rightside, #toc, #pagination .page-number, #pagination .extend { backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); } /* ----- 导航栏 ----- */ #nav { backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); background: rgba(255,255,255,0.62) !important; border-bottom: 1px solid rgba(32,178,170,0.18); } [data-theme="dark"] #nav { background: rgba(12,12,12,0.78) !important; border-bottom: 1px solid rgba(32,178,170,0.30); } /* ----- 首页文章卡片 ----- */ .recent-post-item { border-radius: 16px; background: rgba(255,255,255,0.58) !important; border: 1px solid rgba(32,178,170,0.10); box-shadow: 0 2px 12px rgba(32,178,170,0.06); transition: all 0.3s ease; } .recent-post-item:hover { box-shadow: 0 8px 30px rgba(32,178,170,0.14); transform: translateY(-3px); border-color: rgba(32,178,170,0.25); } [data-theme="dark"] .recent-post-item { background: rgba(20,20,20,0.72) !important; border: 1px solid rgba(32,178,170,0.20); } [data-theme="dark"] .recent-post-item:hover { border-color: rgba(32,178,170,0.40); } /* ----- 侧边栏卡片 ----- */ .card-widget { border-radius: 14px; background: rgba(255,255,255,0.58) !important; border: 1px solid rgba(32,178,170,0.08); box-shadow: 0 2px 10px rgba(32,178,170,0.04); } [data-theme="dark"] .card-widget { background: rgba(20,20,20,0.72) !important; border: 1px solid rgba(32,178,170,0.20); } /* ----- 文章内容区 ----- */ #post, #page, #archive, #category, #tag { border-radius: 16px; background: rgba(255,255,255,0.62) !important; border: 1px solid rgba(32,178,170,0.08); padding: 28px; } [data-theme="dark"] #post, [data-theme="dark"] #page, [data-theme="dark"] #archive, [data-theme="dark"] #category, [data-theme="dark"] #tag { background: rgba(20,20,20,0.72) !important; border: 1px solid rgba(32,178,170,0.20); } /* ----- 右下角工具栏 ----- */ #rightside { background: rgba(255,255,255,0.70) !important; border-radius: 14px !important; padding: 5px; border: 1px solid rgba(32,178,170,0.15); box-shadow: 0 4px 20px rgba(32,178,170,0.08); } [data-theme="dark"] #rightside { background: rgba(18,18,18,0.82) !important; border: 1px solid rgba(32,178,170,0.25); } #rightside > div > button, #rightside > div > a { background: rgba(32,178,170,0.08) !important; border-radius: 10px !important; margin: 2px 0; transition: background 0.2s, transform 0.2s; } #rightside > div > button:hover, #rightside > div > a:hover { background: rgba(32,178,170,0.22) !important; transform: scale(1.05); } /* ----- 分页 ----- */ .pagination .page-number, .pagination .extend { border-radius: 10px; background: rgba(255,255,255,0.58) !important; border: 1px solid rgba(32,178,170,0.12); } [data-theme="dark"] .pagination .page-number, [data-theme="dark"] .pagination .extend { background: rgba(20,20,20,0.72) !important; } .pagination .page-number.current { background: rgba(32,178,170,0.25) !important; border-color: rgba(32,178,170,0.4); } /* ----- 标签/分类按钮 ----- */ .tag-cloud a, .category-list a { border-radius: 10px; background: rgba(32,178,170,0.07) !important; border: 1px solid rgba(32,178,170,0.12); backdrop-filter: blur(6px); transition: all 0.2s; } .tag-cloud a:hover, .category-list a:hover { background: rgba(32,178,170,0.18) !important; border-color: rgba(32,178,170,0.3); } [data-theme="dark"] .tag-cloud a, [data-theme="dark"] .category-list a { background: rgba(32,178,170,0.10) !important; } /* ----- 搜索框 ----- */ #search-input { border-radius: 12px; background: rgba(255,255,255,0.55) !important; backdrop-filter: blur(8px); border: 1px solid rgba(32,178,170,0.15); } [data-theme="dark"] #search-input { background: rgba(20,20,20,0.65) !important; } /* ----- 代码块 ----- */ figure.highlight, #article-container pre { border-radius: 12px; } /* ----- 评论区（将来启用时自动生效）----- */ #vcomments, #waline { border-radius: 16px; background: rgba(255,255,255,0.58) !important; backdrop-filter: blur(12px); padding: 20px; border: 1px solid rgba(32,178,170,0.08); } [data-theme="dark"] #vcomments, [data-theme="dark"] #waline { background: rgba(20,20,20,0.72) !important; } /* ----- 脚注/引用块 ----- */ blockquote { border-left: 4px solid rgba(32,178,170,0.5) !important; background: rgba(32,178,170,0.06) !important; border-radius: 0 10px 10px 0; }</style>
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/lzr.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">陆泽榕的个人Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">自动驾驶部署速查手册 — IP地址、端口、配置参数</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">自动驾驶部署速查手册 — IP地址、端口、配置参数</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-14T16:00:00.000Z" title="发表于 2026-07-15 00:00:00">2026-07-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-15T01:43:24.434Z" title="更新于 2026-07-15 09:43:24">2026-07-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">技术笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="一、总览：系统拓扑"><a href="#一、总览：系统拓扑" class="headerlink" title="一、总览：系统拓扑"></a>一、总览：系统拓扑</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RTK基站 → 4G → DTU(MD-649) → 串口 → IMU(BY_Connect)</span><br><span class="line">                                        ↓</span><br><span class="line">                              交换机(车载) ← 激光雷达×4</span><br><span class="line">                              ↙        ↘</span><br><span class="line">                    A核(.11)              B核(.12)</span><br><span class="line">                控制/感知/规划            定位/融合</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、所有-IP-地址速查"><a href="#二、所有-IP-地址速查" class="headerlink" title="二、所有 IP 地址速查"></a>二、所有 IP 地址速查</h2><h3 id="2-1-车载设备-IP"><a href="#2-1-车载设备-IP" class="headerlink" title="2.1 车载设备 IP"></a>2.1 车载设备 IP</h3><table>
+<thead>
+<tr>
+<th>设备</th>
+<th>IP 地址</th>
+<th>端口&#x2F;说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A核（数据融合）</strong></td>
+<td><code>192.168.86.11</code></td>
+<td>root &#x2F; launch</td>
+</tr>
+<tr>
+<td><strong>B核（视觉AI）</strong></td>
+<td><code>192.168.86.12</code></td>
+<td>root &#x2F; launch</td>
+</tr>
+<tr>
+<td><strong>EC-GC270 维护口</strong></td>
+<td><code>192.168.86.2</code></td>
+<td>echiev &#x2F; launch</td>
+</tr>
+<tr>
+<td><strong>IMU（北云）</strong></td>
+<td><code>192.168.86.72</code></td>
+<td>TCP 端口 <code>2222</code></td>
+</tr>
+<tr>
+<td><strong>中间激光雷达</strong></td>
+<td><code>192.168.86.5</code></td>
+<td>MSOP:<code>2410</code> DIFOP:<code>2411</code></td>
+</tr>
+<tr>
+<td><strong>右前激光雷达</strong></td>
+<td><code>192.168.86.6</code></td>
+<td>MSOP:<code>2416</code> DIFOP:<code>2417</code>（通常不用）</td>
+</tr>
+<tr>
+<td><strong>左前激光雷达</strong></td>
+<td><code>192.168.86.7</code></td>
+<td>MSOP:<code>2414</code> DIFOP:<code>2415</code></td>
+</tr>
+<tr>
+<td><strong>后激光雷达</strong></td>
+<td><code>192.168.86.8</code></td>
+<td>MSOP:<code>2416</code> DIFOP:<code>2417</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>⚠️ <strong>避让清单</strong>：笔记本配 IP 时不要占用 <code>5, 6, 7, 8, 11, 12, 22, 23, 72</code>，建议用 <code>192.168.86.88</code></p>
+</blockquote>
+<h3 id="2-2-笔记本端配置"><a href="#2-2-笔记本端配置" class="headerlink" title="2.2 笔记本端配置"></a>2.2 笔记本端配置</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>本机 IP</td>
+<td><code>192.168.86.88</code>（或其他未被占用的）</td>
+</tr>
+<tr>
+<td>子网掩码</td>
+<td><code>255.255.255.0</code></td>
+</tr>
+<tr>
+<td>雷达配置临时 IP</td>
+<td><code>192.168.1.102</code>（直连雷达用）</td>
+</tr>
+</tbody></table>
+<h2 id="三、激光雷达配置"><a href="#三、激光雷达配置" class="headerlink" title="三、激光雷达配置"></a>三、激光雷达配置</h2><h3 id="3-1-Web-页面配置（初次配置）"><a href="#3-1-Web-页面配置（初次配置）" class="headerlink" title="3.1 Web 页面配置（初次配置）"></a>3.1 Web 页面配置（初次配置）</h3><ol>
+<li>笔记本设 IP 为 <code>192.168.1.102</code>，网线直连雷达</li>
+<li>浏览器访问 <code>192.168.1.200</code></li>
+<li>在 Web 页面的 Setting 中修改：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>中间雷达</th>
+<th>左前雷达</th>
+<th>右前雷达</th>
+<th>后雷达</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Device IP</td>
+<td><code>192.168.86.5</code></td>
+<td><code>192.168.86.7</code></td>
+<td><code>192.168.86.6</code></td>
+<td><code>192.168.86.8</code></td>
+</tr>
+<tr>
+<td>IP Mask</td>
+<td><code>255.255.255.0</code></td>
+<td><code>255.255.255.0</code></td>
+<td><code>255.255.255.0</code></td>
+<td><code>255.255.255.0</code></td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td><code>192.168.86.1</code></td>
+<td><code>192.168.86.1</code></td>
+<td><code>192.168.86.1</code></td>
+<td><code>192.168.86.1</code></td>
+</tr>
+<tr>
+<td>Dest IP</td>
+<td><code>192.168.86.255</code></td>
+<td><code>192.168.86.255</code></td>
+<td><code>192.168.86.255</code></td>
+<td><code>192.168.86.255</code></td>
+</tr>
+<tr>
+<td>MSOP Port</td>
+<td><code>2410</code></td>
+<td><code>2414</code></td>
+<td><code>2416</code></td>
+<td><code>2416</code></td>
+</tr>
+<tr>
+<td>DIFOP Port</td>
+<td><code>2411</code></td>
+<td><code>2415</code></td>
+<td><code>2417</code></td>
+<td><code>2417</code></td>
+</tr>
+</tbody></table>
+<ol start="4">
+<li>点击 <strong>Save</strong>，重启雷达</li>
+</ol>
+<h3 id="3-2-RSView-验证"><a href="#3-2-RSView-验证" class="headerlink" title="3.2 RSView 验证"></a>3.2 RSView 验证</h3><ul>
+<li>打开 RSView，填入对应雷达的 MSOP 端口号</li>
+<li>点云正常显示 &#x3D; 配置成功</li>
+<li>雷达频率确认设为 <strong>10Hz</strong></li>
+</ul>
+<h2 id="四、IMU（北云）配置"><a href="#四、IMU（北云）配置" class="headerlink" title="四、IMU（北云）配置"></a>四、IMU（北云）配置</h2><h3 id="4-1-硬件连接"><a href="#4-1-硬件连接" class="headerlink" title="4.1 硬件连接"></a>4.1 硬件连接</h3><ul>
+<li>USB 转 RS232 串口线连接电脑和 IMU</li>
+<li>设备管理器查看 COM 口号 → 用 <strong>BY_Connect</strong> 软件连接</li>
+</ul>
+<h3 id="4-2-串口参数"><a href="#4-2-串口参数" class="headerlink" title="4.2 串口参数"></a>4.2 串口参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>波特率</td>
+<td><code>115200</code></td>
+</tr>
+<tr>
+<td>COM 口</td>
+<td>在设备管理器确认</td>
+</tr>
+</tbody></table>
+<h3 id="4-3-关键-AT-指令序列"><a href="#4-3-关键-AT-指令序列" class="headerlink" title="4.3 关键 AT 指令序列"></a>4.3 关键 AT 指令序列</h3><p>按顺序逐条发送（每条都要有回复）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">LOG COM1 GPGGA ONTIME 1</span><br><span class="line"></span><br><span class="line">SETINSTRANSLATION ANT1 0.30 -0.80 0.36 0.05 0.05 0.05 IMUBODY</span><br><span class="line"># 主天线位置（相对IMU，单位m）</span><br><span class="line"></span><br><span class="line">SETINSTRANSLATION ANT2 0.30 0.05 0.36 0.05 0.05 0.05 IMUBODY</span><br><span class="line"># 从天线位置</span><br><span class="line"></span><br><span class="line">IPCONFIG ETHA STATIC 192.168.86.72 255.255.255.0 192.168.86.2</span><br><span class="line"># 设置IMU静态IP</span><br><span class="line"></span><br><span class="line">ICOMCONFIG ICOM1 UDP 192.168.86.255:1111</span><br><span class="line"># 配置数据输出方式</span><br><span class="line"></span><br><span class="line">LOG ICOM1 RAWIMUSA ONTIME 0.01</span><br><span class="line">LOG ICOM1 INSPVAA ONTIME 0.01</span><br><span class="line">LOG ICOM1 BESTGNSSPOSA ONTIME 1</span><br><span class="line">LOG ICOM1 GPZDA ONTIME 1</span><br><span class="line">RAWIMUOUT ON</span><br><span class="line"></span><br><span class="line">SAVECONFIG</span><br><span class="line">REBOOT</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-验证"><a href="#4-4-验证" class="headerlink" title="4.4 验证"></a>4.4 验证</h3><ul>
+<li>BY_Connect 通过 TCP&#x2F;IP 连接 <code>192.168.86.72:2222</code></li>
+<li>AutoDriver 中观察 <strong>4-4 定位标志</strong>（表示高精度定位已就绪）</li>
+</ul>
+<h2 id="五、A核-B核-关键路径"><a href="#五、A核-B核-关键路径" class="headerlink" title="五、A核 &#x2F; B核 关键路径"></a>五、A核 &#x2F; B核 关键路径</h2><h3 id="5-1-程序部署路径"><a href="#5-1-程序部署路径" class="headerlink" title="5.1 程序部署路径"></a>5.1 程序部署路径</h3><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>路径</th>
+<th>所在核心</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>控制 control</td>
+<td><code>/etc/echiev/bin/control</code></td>
+<td>A核 (.11)</td>
+</tr>
+<tr>
+<td>感知 lidar</td>
+<td><code>/etc/echiev/bin/lidar</code></td>
+<td>A核 (.11)</td>
+</tr>
+<tr>
+<td>规划 planning</td>
+<td><code>/etc/echiev/bin/plinening</code></td>
+<td>A核 (.11)</td>
+</tr>
+<tr>
+<td>定位 localization</td>
+<td><code>/etc/echiev/bin/localization</code></td>
+<td>B核 (.12)</td>
+</tr>
+<tr>
+<td>融合 fusion</td>
+<td><code>/etc/echiev/bin/fusion</code></td>
+<td>B核 (.12)</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-配置文件路径"><a href="#5-2-配置文件路径" class="headerlink" title="5.2 配置文件路径"></a>5.2 配置文件路径</h3><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>启动脚本</td>
+<td><code>/etc/echiev/autostart/S99_lidar.sh</code></td>
+<td>CAN 通信参数 + 启动程序列表</td>
+</tr>
+<tr>
+<td>控制配置</td>
+<td><code>/etc/echiev/control_new/control_conf.cfg</code></td>
+<td>A核 (.11)</td>
+</tr>
+<tr>
+<td>规划配置</td>
+<td><code>/etc/echiev/planning/</code></td>
+<td>A核 (.11)</td>
+</tr>
+<tr>
+<td>定位配置</td>
+<td><code>/etc/echiev/localization.cfg</code></td>
+<td>B核 (.12)</td>
+</tr>
+<tr>
+<td>高精地图</td>
+<td><code>/etc/echiev/hdmap/hdmap.bin</code></td>
+<td><strong>A核+B核</strong>都要更新</td>
+</tr>
+<tr>
+<td>规划参数</td>
+<td><code>/etc/echiev/plinening/pline.cfg</code></td>
+<td>速度&#x2F;停站时间</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-日志路径"><a href="#5-3-日志路径" class="headerlink" title="5.3 日志路径"></a>5.3 日志路径</h3><table>
+<thead>
+<tr>
+<th>日志</th>
+<th>路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>规划日志</td>
+<td><code>/etc/ulog/plan/</code></td>
+</tr>
+<tr>
+<td>控制日志</td>
+<td><code>/etc/ulog/control/</code></td>
+</tr>
+</tbody></table>
+<h2 id="六、DTU（4G-数传模块）配置"><a href="#六、DTU（4G-数传模块）配置" class="headerlink" title="六、DTU（4G 数传模块）配置"></a>六、DTU（4G 数传模块）配置</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>设备</td>
+<td>驿唐 MD-649</td>
+</tr>
+<tr>
+<td>配置工具</td>
+<td><code>dtucfg2.exe</code>（串口配置）</td>
+</tr>
+<tr>
+<td>波特率</td>
+<td><code>115200</code></td>
+</tr>
+<tr>
+<td>第2路串口</td>
+<td><code>8002</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>DTU 接收 RTK 基站 4G 信号，通过串口转发给 IMU。</p>
+</blockquote>
+<h2 id="七、常用软件清单"><a href="#七、常用软件清单" class="headerlink" title="七、常用软件清单"></a>七、常用软件清单</h2><table>
+<thead>
+<tr>
+<th>软件</th>
+<th>用途</th>
+<th>路径&#x2F;说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MobaXterm &#x2F; Xshell</strong></td>
+<td>SSH 终端</td>
+<td>连接 A核 (.11)、B核 (.12)</td>
+</tr>
+<tr>
+<td><strong>WinSCP</strong></td>
+<td>文件传输</td>
+<td>拖拽上传程序&#x2F;配置</td>
+</tr>
+<tr>
+<td><strong>AutoDriver</strong></td>
+<td>实时监控</td>
+<td>查看自动驾驶状态、地图</td>
+</tr>
+<tr>
+<td><strong>net8.0-windows</strong></td>
+<td>规划工具</td>
+<td>AutoDriver 辅助，读取规划配置</td>
+</tr>
+<tr>
+<td><strong>RSView</strong></td>
+<td>激光雷达点云</td>
+<td>配置 MSOP&#x2F;DIFOP 端口查看</td>
+</tr>
+<tr>
+<td><strong>BY_Connect</strong></td>
+<td>IMU 配置</td>
+<td>串口 + TCP <code>192.168.86.72:2222</code></td>
+</tr>
+<tr>
+<td><strong>dtucfg2.exe</strong></td>
+<td>DTU 配置</td>
+<td>串口连接配置</td>
+</tr>
+<tr>
+<td><strong>driverlessDFX2.0</strong></td>
+<td>地图录制</td>
+<td>录制高精地图数据</td>
+</tr>
+<tr>
+<td><strong>Wireshark</strong></td>
+<td>抓包分析</td>
+<td>雷达标定抓 pcap</td>
+</tr>
+</tbody></table>
+<h2 id="八、部署标准流程"><a href="#八、部署标准流程" class="headerlink" title="八、部署标准流程"></a>八、部署标准流程</h2><h3 id="8-1-传程序"><a href="#8-1-传程序" class="headerlink" title="8.1 传程序"></a>8.1 传程序</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以 control 为例</span></span><br><span class="line"><span class="comment"># 1. 备份旧文件</span></span><br><span class="line">ssh root@192.168.86.11 <span class="string">&quot;cp /etc/echiev/bin/control /etc/echiev/bin/control.bak.<span class="subst">$(date +%Y%m%d_%H%M%S)</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 上传新程序（本机执行）</span></span><br><span class="line">scp control root@192.168.86.11:/etc/echiev/bin/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 赋权</span></span><br><span class="line">ssh root@192.168.86.11 <span class="string">&quot;chmod 777 /etc/echiev/bin/control&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 杀进程重启</span></span><br><span class="line">ssh root@192.168.86.11 <span class="string">&quot;pkill -9 control; cd /etc/echiev/bin &amp;&amp; nohup ./control &gt; /dev/null 2&gt;&amp;1 &amp;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 确认进程</span></span><br><span class="line">ssh root@192.168.86.11 <span class="string">&quot;pgrep control &amp;&amp; echo &#x27;✅ 运行中&#x27; || echo &#x27;❌ 未运行&#x27;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-传配置"><a href="#8-2-传配置" class="headerlink" title="8.2 传配置"></a>8.2 传配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pline.cfg 只需替换，然后重启对应模块</span></span><br><span class="line">scp pline.cfg root@192.168.86.11:/etc/echiev/plinening/</span><br><span class="line">ssh root@192.168.86.11 <span class="string">&quot;pkill -9 plinening; cd /etc/echiev/bin &amp;&amp; nohup ./plinening &gt; /dev/null 2&gt;&amp;1 &amp;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-更新高精地图"><a href="#8-3-更新高精地图" class="headerlink" title="8.3 更新高精地图"></a>8.3 更新高精地图</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 两个核心都要更新</span></span><br><span class="line">scp hdmap.bin root@192.168.86.11:/etc/echiev/hdmap/</span><br><span class="line">scp hdmap.bin root@192.168.86.12:/etc/echiev/hdmap/</span><br></pre></td></tr></table></figure>
+
+<h2 id="九、规划参数修改（pline-cfg）"><a href="#九、规划参数修改（pline-cfg）" class="headerlink" title="九、规划参数修改（pline.cfg）"></a>九、规划参数修改（pline.cfg）</h2><p>在 <code>192.168.86.2</code> 的 <code>/etc/echiev/plinening/pline.cfg</code>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+<th>单位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fparkTime</code></td>
+<td>停站时间</td>
+<td>秒(s)</td>
+</tr>
+<tr>
+<td><code>fspeedLimit</code></td>
+<td>最高速度</td>
+<td>米&#x2F;秒(m&#x2F;s)</td>
+</tr>
+<tr>
+<td><code>iobjectExist=0</code></td>
+<td>忽略障碍物</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>iobjectExist=1</code></td>
+<td>遇障停车</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>isituationModel=0</code></td>
+<td>循环模式</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>isituationModel=1</code></td>
+<td>行程模式</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>修改后重启 planning 模块生效。</p>
+</blockquote>
+<h2 id="十、状态检查速查"><a href="#十、状态检查速查" class="headerlink" title="十、状态检查速查"></a>十、状态检查速查</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># A核</span></span><br><span class="line">ssh root@192.168.86.11</span><br><span class="line">pgrep control &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;✅ control&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;❌ control&quot;</span></span><br><span class="line">pgrep lidar &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;✅ lidar&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;❌ lidar&quot;</span></span><br><span class="line">pgrep plinening &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;✅ planning&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;❌ planning&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># B核</span></span><br><span class="line">ssh root@192.168.86.12</span><br><span class="line">pgrep localization &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;✅ localization&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;❌ localization&quot;</span></span><br><span class="line">pgrep fusion &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;✅ fusion&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;❌ fusion&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 看日志</span></span><br><span class="line">journalctl -u sweeper.service -n 50 --no-pager   <span class="comment"># 洗地车</span></span><br><span class="line"><span class="built_in">tail</span> -n 30 /etc/ulog/system.log | grep -E <span class="string">&quot;ERROR|WARN&quot;</span>  <span class="comment"># 通用</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<blockquote>
+<p>📝 整理自《智行未来部署.pdf》(2026-05-28)、《EC-GC270 使用说明》、驿唐《MD-649 用户使用手册》。<br>仅供现场部署参考，以最新版本文档为准。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://lzr-yctf1883.top">小陆</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://lzr-yctf1883.top/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/">https://lzr-yctf1883.top/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://lzr-yctf1883.top" target="_blank">陆泽榕的个人Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6/">自动驾驶</a><a class="post-meta__tags" href="/tags/%E5%AE%9E%E4%B9%A0/">实习</a><a class="post-meta__tags" href="/tags/%E9%83%A8%E7%BD%B2/">部署</a><a class="post-meta__tags" href="/tags/%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/">速查手册</a><a class="post-meta__tags" href="/tags/IP%E9%85%8D%E7%BD%AE/">IP配置</a></div><div class="post-share"><div class="social-share" data-image="/lzr.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/07/14/Linux%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/" title="Linux 常用命令速查手册（自动驾驶现场部署实战版）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Linux 常用命令速查手册（自动驾驶现场部署实战版）</div></div><div class="info-2"><div class="info-item-1">一、目录与文件操作基础操作   命令 作用 示例    pwd 查看当前目录路径 pwd   ls -l 列出文件详情（权限、大小、时间） ls -l /etc/echiev/   ls -lh 人类可读的文件大小（带K&#x2F;M&#x2F;G） ls -lh /etc/echiev/bin/   cd 目录 切换目录 cd /etc/echiev/   cd .. 返回上级目录 cd ..   mkdir 目录名 创建目录 mkdir backup_20260714   touch 文件名 创建空文件 touch log_20260714.md   cp 源 目标 复制文件 cp start.sh start.sh.bak   mv 源 目标 移动&#x2F;重命名 mv /tmp/can.service /etc/systemd/system/   rm 文件名 删除文件 rm /tmp/old.tar.gz   rm -rf 目录 递归删除目录（危险！） 慎用，不要用   查看文件   命令 作用 示例    cat 文件 查看全部内容 cat /etc/echiev/...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/07/14/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%AE%9E%E4%B9%A0%E7%AC%94%E8%AE%B0-Day1/" title="自动驾驶实习笔记-Day1-2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-14</div><div class="info-item-2">自动驾驶实习笔记-Day1-2</div></div><div class="info-2"><div class="info-item-1">Day 1：环境搭建与硬件认知工作流程 上午：阅读部署文档 + 安装软件环境 下午：实车操作，熟悉硬件架构  装了的软件   软件 用途    RSView 激光雷达点云可视化   MobaXterm SSH 终端 + 文件传输   Wireshark 网络抓包（标定用）   AutoDriver 实时监控各模块运行状态   规划工具 读取规划配置   BY_Connect 配置北云 IMU   dtucfg2 配置驿唐 DTU   车载硬件拓扑123RTK 基站 → 4G → DTU(黑) → 串口 → IMU(白) → 网线 → 交换机 → EC-GC270 域控激光雷达 ×4 ──────────────网线───────────→ 交换机笔记本 ──────────────────网线───────────→ 交换机     硬件 IP 作用    EC-GC270 A 核 (RK3588) 192.168.86.11 感知、规划、控制   EC-GC270 B 核 (Journey 2) 192.168.86.12 定位、融合   激光雷达 ×4 .5 &#x2F; ....</div></div></div></a><a class="pagination-related" href="/2026/07/14/Linux%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/" title="Linux 常用命令速查手册（自动驾驶现场部署实战版）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-14</div><div class="info-item-2">Linux 常用命令速查手册（自动驾驶现场部署实战版）</div></div><div class="info-2"><div class="info-item-1">一、目录与文件操作基础操作   命令 作用 示例    pwd 查看当前目录路径 pwd   ls -l 列出文件详情（权限、大小、时间） ls -l /etc/echiev/   ls -lh 人类可读的文件大小（带K&#x2F;M&#x2F;G） ls -lh /etc/echiev/bin/   cd 目录 切换目录 cd /etc/echiev/   cd .. 返回上级目录 cd ..   mkdir 目录名 创建目录 mkdir backup_20260714   touch 文件名 创建空文件 touch log_20260714.md   cp 源 目标 复制文件 cp start.sh start.sh.bak   mv 源 目标 移动&#x2F;重命名 mv /tmp/can.service /etc/systemd/system/   rm 文件名 删除文件 rm /tmp/old.tar.gz   rm -rf 目录 递归删除目录（危险！） 慎用，不要用   查看文件   命令 作用 示例    cat 文件 查看全部内容 cat /etc/echiev/...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/lzr.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">小陆</div><div class="author-info-description">CS本科 · 自动驾驶实习 · Java/AI方向</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/YCTF1883"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://lzr-yctf1883.top" target="_blank" title="博客"><i class="fas fa-blog"></i></a><a class="social-icon" href="https://github.com/YCTF1883" target="_blank" title="GitHub"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">🚗 自动驾驶现场部署实习生<br>📝 记录学习与成长</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%80%BB%E8%A7%88%EF%BC%9A%E7%B3%BB%E7%BB%9F%E6%8B%93%E6%89%91"><span class="toc-number">1.</span> <span class="toc-text">一、总览：系统拓扑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%89%80%E6%9C%89-IP-%E5%9C%B0%E5%9D%80%E9%80%9F%E6%9F%A5"><span class="toc-number">2.</span> <span class="toc-text">二、所有 IP 地址速查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E8%BD%A6%E8%BD%BD%E8%AE%BE%E5%A4%87-IP"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 车载设备 IP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%AC%94%E8%AE%B0%E6%9C%AC%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 笔记本端配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE%E9%85%8D%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">三、激光雷达配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Web-%E9%A1%B5%E9%9D%A2%E9%85%8D%E7%BD%AE%EF%BC%88%E5%88%9D%E6%AC%A1%E9%85%8D%E7%BD%AE%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 Web 页面配置（初次配置）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-RSView-%E9%AA%8C%E8%AF%81"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 RSView 验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81IMU%EF%BC%88%E5%8C%97%E4%BA%91%EF%BC%89%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">四、IMU（北云）配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E7%A1%AC%E4%BB%B6%E8%BF%9E%E6%8E%A5"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E4%B8%B2%E5%8F%A3%E5%8F%82%E6%95%B0"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 串口参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%85%B3%E9%94%AE-AT-%E6%8C%87%E4%BB%A4%E5%BA%8F%E5%88%97"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 关键 AT 指令序列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E9%AA%8C%E8%AF%81"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81A%E6%A0%B8-B%E6%A0%B8-%E5%85%B3%E9%94%AE%E8%B7%AF%E5%BE%84"><span class="toc-number">5.</span> <span class="toc-text">五、A核 &#x2F; B核 关键路径</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E7%A8%8B%E5%BA%8F%E9%83%A8%E7%BD%B2%E8%B7%AF%E5%BE%84"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 程序部署路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="toc-number">5.2.</span> <span class="toc-text">5.2 配置文件路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E6%97%A5%E5%BF%97%E8%B7%AF%E5%BE%84"><span class="toc-number">5.3.</span> <span class="toc-text">5.3 日志路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81DTU%EF%BC%884G-%E6%95%B0%E4%BC%A0%E6%A8%A1%E5%9D%97%EF%BC%89%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">六、DTU（4G 数传模块）配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%B8%85%E5%8D%95"><span class="toc-number">7.</span> <span class="toc-text">七、常用软件清单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E9%83%A8%E7%BD%B2%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B"><span class="toc-number">8.</span> <span class="toc-text">八、部署标准流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E4%BC%A0%E7%A8%8B%E5%BA%8F"><span class="toc-number">8.1.</span> <span class="toc-text">8.1 传程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E4%BC%A0%E9%85%8D%E7%BD%AE"><span class="toc-number">8.2.</span> <span class="toc-text">8.2 传配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E6%9B%B4%E6%96%B0%E9%AB%98%E7%B2%BE%E5%9C%B0%E5%9B%BE"><span class="toc-number">8.3.</span> <span class="toc-text">8.3 更新高精地图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E8%A7%84%E5%88%92%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9%EF%BC%88pline-cfg%EF%BC%89"><span class="toc-number">9.</span> <span class="toc-text">九、规划参数修改（pline.cfg）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E7%8A%B6%E6%80%81%E6%A3%80%E6%9F%A5%E9%80%9F%E6%9F%A5"><span class="toc-number">10.</span> <span class="toc-text">十、状态检查速查</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/" title="自动驾驶部署速查手册 — IP地址、端口、配置参数">自动驾驶部署速查手册 — IP地址、端口、配置参数</a><time datetime="2026-07-14T16:00:00.000Z" title="发表于 2026-07-15 00:00:00">2026-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/14/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%AE%9E%E4%B9%A0%E7%AC%94%E8%AE%B0-Day1/" title="自动驾驶实习笔记-Day1-2">自动驾驶实习笔记-Day1-2</a><time datetime="2026-07-13T16:00:00.000Z" title="发表于 2026-07-14 00:00:00">2026-07-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/14/Linux%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/" title="Linux 常用命令速查手册（自动驾驶现场部署实战版）">Linux 常用命令速查手册（自动驾驶现场部署实战版）</a><time datetime="2026-07-13T16:00:00.000Z" title="发表于 2026-07-14 00:00:00">2026-07-14</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By 小陆</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.5"></script><script src="/js/main.js?v=5.5.5"></script><div class="js-pjax"></div><style>/*全站蓝绿磨砂*/.card-widget,.recent-post-item,#post,#page,#archive,#category,#tag,#rightside,#toc,#pagination .page-number,#pagination .extend{backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)}#nav{backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);background:rgba(255,255,255,.62)!important;border-bottom:1px solid rgba(32,178,170,.18)}[data-theme="dark"]<script id="canvas_nest" defer="defer" color="32,178,170" opacity="0.6" zIndex="-1" count="80" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="false" data-text="🚗,🚀,💪,✨,📝,🎯,🌟,🔥" data-fontsize="18px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
