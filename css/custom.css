@@ -188,25 +188,25 @@ blockquote {
 .heatmap-widget .item-content {
   display: flex;
   justify-content: center;
-  padding: 6px 0;
+  padding: 4px 0 2px;
 }
 .heatmap-wrapper {
   display: inline-flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   overflow-x: auto;
   max-width: 100%;
-  padding: 4px 2px;
+  padding: 2px;
 }
 .heatmap-months {
   display: flex;
-  font-size: 10px;
+  font-size: 8px;
   color: #999;
   line-height: 1;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 .heatmap-month-label {
-  width: 14px;
+  width: 11px;
   text-align: left;
   white-space: nowrap;
   overflow: visible;
@@ -214,20 +214,20 @@ blockquote {
 .heatmap-row {
   display: flex;
   align-items: center;
-  height: 14px;
+  height: 11px;
   gap: 2px;
 }
 .heatmap-day-label {
-  width: 16px;
-  font-size: 9px;
+  width: 12px;
+  font-size: 7px;
   color: #aaa;
   text-align: right;
-  margin-right: 2px;
+  margin-right: 1px;
   flex-shrink: 0;
 }
 .heatmap-cell {
-  width: 12px;
-  height: 12px;
+  width: 9px;
+  height: 9px;
   border-radius: 2px;
   flex-shrink: 0;
   cursor: pointer;
@@ -236,21 +236,26 @@ blockquote {
 .heatmap-cell:hover {
   outline: 2px solid rgba(32,178,170,0.5);
 }
+.heatmap-future {
+  background: transparent !important;
+  cursor: default;
+  pointer-events: none;
+}
 .heatmap-legend {
   display: flex;
   align-items: center;
-  gap: 3px;
-  margin-top: 6px;
+  gap: 2px;
+  margin-top: 4px;
   justify-content: flex-end;
-  font-size: 10px;
+  font-size: 8px;
   color: #999;
 }
 .legend-label {
   line-height: 1;
 }
 .legend-cell {
-  width: 12px;
-  height: 12px;
+  width: 9px;
+  height: 9px;
   border-radius: 2px;
 }
 
@@ -259,4 +264,29 @@ blockquote {
 }
 [data-theme="dark"] .heatmap-legend .legend-cell:first-of-type {
   background: #1e1e1e !important;
+}
+
+/* =========================================
+   侧边栏紧凑布局 — 分类+标签并排
+   ========================================= */
+#aside-content .card-categories,
+#aside-content .card-tags {
+  display: inline-block;
+  vertical-align: top;
+  width: 50%;
+}
+#aside-content .card-categories {
+  padding-right: 6px;
+}
+#aside-content .card-tags {
+  padding-left: 6px;
+}
+#aside-content .card-categories .item-headline,
+#aside-content .card-tags .item-headline {
+  font-size: 0.9em;
+}
+#aside-content .card-categories .card-category-list,
+#aside-content .card-tags .card-tag-cloud {
+  max-height: 160px;
+  overflow-y: auto;
 }
