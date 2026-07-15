@@ -181,3 +181,82 @@ blockquote {
   background: rgba(32,178,170,0.06) !important;
   border-radius: 0 10px 10px 0;
 }
+
+/* =========================================
+   贡献热力图（GitHub 风格）
+   ========================================= */
+.heatmap-widget .item-content {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+}
+.heatmap-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 4px 2px;
+}
+.heatmap-months {
+  display: flex;
+  font-size: 10px;
+  color: #999;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.heatmap-month-label {
+  width: 14px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: visible;
+}
+.heatmap-row {
+  display: flex;
+  align-items: center;
+  height: 14px;
+  gap: 2px;
+}
+.heatmap-day-label {
+  width: 16px;
+  font-size: 9px;
+  color: #aaa;
+  text-align: right;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+.heatmap-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: outline 0.15s;
+}
+.heatmap-cell:hover {
+  outline: 2px solid rgba(32,178,170,0.5);
+}
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 6px;
+  justify-content: flex-end;
+  font-size: 10px;
+  color: #999;
+}
+.legend-label {
+  line-height: 1;
+}
+.legend-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .heatmap-cell[data-count="0"] {
+  background: #1e1e1e !important;
+}
+[data-theme="dark"] .heatmap-legend .legend-cell:first-of-type {
+  background: #1e1e1e !important;
+}
