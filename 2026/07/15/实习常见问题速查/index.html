@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>实习常见问题速查 — GNSS定位状态、RTK链路排错 | 陆泽榕的个人Blog</title><meta name="author" content="小陆"><meta name="copyright" content="小陆"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="记录实习现场遇到的常见问题和排错过程，方便以后遇到类似问题快速查阅。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实习常见问题速查 — GNSS定位状态、RTK链路排错">
+<meta property="og:url" content="https://lzr-yctf1883.top/2026/07/15/%E5%AE%9E%E4%B9%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5/index.html">
+<meta property="og:site_name" content="陆泽榕的个人Blog">
+<meta property="og:description" content="记录实习现场遇到的常见问题和排错过程，方便以后遇到类似问题快速查阅。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lzr-yctf1883.top/lzr.png">
+<meta property="article:published_time" content="2026-07-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-15T03:11:44.843Z">
+<meta property="article:author" content="小陆">
+<meta property="article:tag" content="自动驾驶">
+<meta property="article:tag" content="实习">
+<meta property="article:tag" content="RTK">
+<meta property="article:tag" content="DTU">
+<meta property="article:tag" content="IMU">
+<meta property="article:tag" content="排错">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lzr-yctf1883.top/lzr.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "实习常见问题速查 — GNSS定位状态、RTK链路排错",
+  "url": "https://lzr-yctf1883.top/2026/07/15/%E5%AE%9E%E4%B9%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5/",
+  "image": "https://lzr-yctf1883.top/lzr.png",
+  "datePublished": "2026-07-14T16:00:00.000Z",
+  "dateModified": "2026-07-15T03:11:44.843Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "小陆",
+      "url": "https://lzr-yctf1883.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lzr-yctf1883.top/2026/07/15/%E5%AE%9E%E4%B9%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.5"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css"><link rel="stylesheet" href="/css/custom.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '实习常见问题速查 — GNSS定位状态、RTK链路排错',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"><style id="custom-css">/* ========================================= 全站蓝绿 · 磨砂玻璃质感 粒子特效透过半透明面板可见 ========================================= */ /* ----- 核心：所有面板统一磨砂 ----- */ .card-widget, .recent-post-item, #post, #page, #archive, #category, #tag, #rightside, #toc, #pagination .page-number, #pagination .extend { backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); } /* ----- 导航栏 ----- */ #nav { backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); background: rgba(255,255,255,0.62) !important; border-bottom: 1px solid rgba(32,178,170,0.18); } [data-theme="dark"] #nav { background: rgba(12,12,12,0.78) !important; border-bottom: 1px solid rgba(32,178,170,0.30); } /* ----- 首页文章卡片 ----- */ .recent-post-item { border-radius: 16px; background: rgba(255,255,255,0.58) !important; border: 1px solid rgba(32,178,170,0.10); box-shadow: 0 2px 12px rgba(32,178,170,0.06); transition: all 0.3s ease; } .recent-post-item:hover { box-shadow: 0 8px 30px rgba(32,178,170,0.14); transform: translateY(-3px); border-color: rgba(32,178,170,0.25); } [data-theme="dark"] .recent-post-item { background: rgba(20,20,20,0.72) !important; border: 1px solid rgba(32,178,170,0.20); } [data-theme="dark"] .recent-post-item:hover { border-color: rgba(32,178,170,0.40); } /* ----- 侧边栏卡片 ----- */ .card-widget { border-radius: 14px; background: rgba(255,255,255,0.58) !important; border: 1px solid rgba(32,178,170,0.08); box-shadow: 0 2px 10px rgba(32,178,170,0.04); } [data-theme="dark"] .card-widget { background: rgba(20,20,20,0.72) !important; border: 1px solid rgba(32,178,170,0.20); } /* ----- 文章内容区 ----- */ #post, #page, #archive, #category, #tag { border-radius: 16px; background: rgba(255,255,255,0.62) !important; border: 1px solid rgba(32,178,170,0.08); padding: 28px; } [data-theme="dark"] #post, [data-theme="dark"] #page, [data-theme="dark"] #archive, [data-theme="dark"] #category, [data-theme="dark"] #tag { background: rgba(20,20,20,0.72) !important; border: 1px solid rgba(32,178,170,0.20); } /* ----- 右下角工具栏 ----- */ #rightside { background: rgba(255,255,255,0.70) !important; border-radius: 14px !important; padding: 5px; border: 1px solid rgba(32,178,170,0.15); box-shadow: 0 4px 20px rgba(32,178,170,0.08); } [data-theme="dark"] #rightside { background: rgba(18,18,18,0.82) !important; border: 1px solid rgba(32,178,170,0.25); } #rightside > div > button, #rightside > div > a { background: rgba(32,178,170,0.08) !important; border-radius: 10px !important; margin: 2px 0; transition: background 0.2s, transform 0.2s; } #rightside > div > button:hover, #rightside > div > a:hover { background: rgba(32,178,170,0.22) !important; transform: scale(1.05); } /* ----- 分页 ----- */ .pagination .page-number, .pagination .extend { border-radius: 10px; background: rgba(255,255,255,0.58) !important; border: 1px solid rgba(32,178,170,0.12); } [data-theme="dark"] .pagination .page-number, [data-theme="dark"] .pagination .extend { background: rgba(20,20,20,0.72) !important; } .pagination .page-number.current { background: rgba(32,178,170,0.25) !important; border-color: rgba(32,178,170,0.4); } /* ----- 标签/分类按钮 ----- */ .tag-cloud a, .category-list a { border-radius: 10px; background: rgba(32,178,170,0.07) !important; border: 1px solid rgba(32,178,170,0.12); backdrop-filter: blur(6px); transition: all 0.2s; } .tag-cloud a:hover, .category-list a:hover { background: rgba(32,178,170,0.18) !important; border-color: rgba(32,178,170,0.3); } [data-theme="dark"] .tag-cloud a, [data-theme="dark"] .category-list a { background: rgba(32,178,170,0.10) !important; } /* ----- 搜索框 ----- */ #search-input { border-radius: 12px; background: rgba(255,255,255,0.55) !important; backdrop-filter: blur(8px); border: 1px solid rgba(32,178,170,0.15); } [data-theme="dark"] #search-input { background: rgba(20,20,20,0.65) !important; } /* ----- 代码块 ----- */ figure.highlight, #article-container pre { border-radius: 12px; } /* ----- 评论区（将来启用时自动生效）----- */ #vcomments, #waline { border-radius: 16px; background: rgba(255,255,255,0.58) !important; backdrop-filter: blur(12px); padding: 20px; border: 1px solid rgba(32,178,170,0.08); } [data-theme="dark"] #vcomments, [data-theme="dark"] #waline { background: rgba(20,20,20,0.72) !important; } /* ----- 脚注/引用块 ----- */ blockquote { border-left: 4px solid rgba(32,178,170,0.5) !important; background: rgba(32,178,170,0.06) !important; border-radius: 0 10px 10px 0; }</style>
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/lzr.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">陆泽榕的个人Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">实习常见问题速查 — GNSS定位状态、RTK链路排错</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">实习常见问题速查 — GNSS定位状态、RTK链路排错</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-14T16:00:00.000Z" title="发表于 2026-07-15 00:00:00">2026-07-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-15T03:11:44.843Z" title="更新于 2026-07-15 11:11:44">2026-07-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%97%E9%80%9A%E6%99%BA%E8%A1%8C%E6%9C%AA%E6%9D%A5%E5%AE%9E%E4%B9%A0/">南通智行未来实习</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%97%E9%80%9A%E6%99%BA%E8%A1%8C%E6%9C%AA%E6%9D%A5%E5%AE%9E%E4%B9%A0/%E5%AE%9E%E4%B9%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">实习常见问题</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="一、GNSS-定位状态速查"><a href="#一、GNSS-定位状态速查" class="headerlink" title="一、GNSS 定位状态速查"></a>一、GNSS 定位状态速查</h2><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>英文</th>
+<th>含义</th>
+<th>精度</th>
+<th>是否可用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>单点解</strong></td>
+<td>SINGLE</td>
+<td>仅靠卫星信号，无差分修正</td>
+<td>米级</td>
+<td>❌ 不行</td>
+</tr>
+<tr>
+<td><strong>浮动解</strong></td>
+<td>Float</td>
+<td>收到差分修正但未锁定整周模糊度</td>
+<td>分米级</td>
+<td>⚠️ 不够</td>
+</tr>
+<tr>
+<td><strong>固定解</strong></td>
+<td>Fixx&#x2F;Fixed</td>
+<td>整周模糊度已锁定，差分修正生效</td>
+<td>厘米级</td>
+<td>✅ 理想</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>自动驾驶需要 <strong>Fixed（固定解）</strong>，至少 4-4 定位标志。</p>
+</blockquote>
+<hr>
+<h2 id="二、RTK-差分数据链路"><a href="#二、RTK-差分数据链路" class="headerlink" title="二、RTK 差分数据链路"></a>二、RTK 差分数据链路</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTK基准站 → 4G天空 → DTU(MD-649) → 串口(RS232) → IMU(北云) → 输出定位</span><br></pre></td></tr></table></figure>
+
+<p>链路中任何一环断开 → 退化为 SINGLE。</p>
+<hr>
+<h2 id="三、2026-07-15-排错记录"><a href="#三、2026-07-15-排错记录" class="headerlink" title="三、2026-07-15 排错记录"></a>三、2026-07-15 排错记录</h2><h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><ul>
+<li>BY_Connect 连接 IMU 后，定位状态显示 <strong>SINGLE</strong></li>
+<li>Float&#x2F;Fixed 都上不去</li>
+</ul>
+<h3 id="排错过程"><a href="#排错过程" class="headerlink" title="排错过程"></a>排错过程</h3><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>检查项</th>
+<th>结果</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>刚换了 SIM 卡需不需要改 DTU 配置？</td>
+<td>带教说移动→移动不用改 APN</td>
+<td>❌ 排除</td>
+</tr>
+<tr>
+<td>2</td>
+<td>换卡时是否断电？</td>
+<td>已断电换卡</td>
+<td>❌ 排除</td>
+</tr>
+<tr>
+<td>3</td>
+<td>SIM 卡激活没有？</td>
+<td>已激活</td>
+<td>❌ 排除</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>DTU 指示灯</strong></td>
+<td>🟢 绿色常亮 &#x3D; 已连上数据中心</td>
+<td>✅ DTU 链路正常</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>串口线</strong>（DTU→IMU）</td>
+<td>可能换卡时不小心碰松</td>
+<td>⚠️ 待确认</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>IMU IP 地址</strong></td>
+<td>可能配错了</td>
+<td>⚠️ 怀疑是 <code>192.168.86.72:2222</code> 没配对</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>挂载点 &#x2F; Mount Point</strong></td>
+<td>带教说配置不对</td>
+<td>⚠️ NTRIP 设置需检查</td>
+</tr>
+</tbody></table>
+<h3 id="根因（待完全确认）"><a href="#根因（待完全确认）" class="headerlink" title="根因（待完全确认）"></a>根因（待完全确认）</h3><p>两个配置可能有问题：</p>
+<ol>
+<li><p><strong>IMU 的静态 IP</strong> → 通过 AT 指令设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPCONFIG ETHA STATIC 192.168.86.72 255.255.255.0 192.168.86.2</span><br></pre></td></tr></table></figure>
+<p>设置后 BY_Connect 用 <code>192.168.86.72:2222</code> TCP 连接</p>
+</li>
+<li><p><strong>NTRIP 挂载点（Mount Point）</strong> → 在 BY_Connect 里配置</p>
+<ul>
+<li>挂载点决定了 IMU 从哪个基准站拿 RTK 差分数据</li>
+<li>挂载点不对 &#x3D; 没差分数据 &#x3D; SINGLE</li>
+</ul>
+</li>
+</ol>
+<h3 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h3><ul>
+<li>换 SIM 卡不用重配 DTU（同运营商的话）</li>
+<li>换完卡记得检查串口线有没有碰松</li>
+<li>DTU 绿灯常亮只代表 4G→数据中心 通了，不保证 DTU→IMU 的串口通</li>
+<li>SINGLE → 差分数据没到 IMU</li>
+<li>Float → 差分数据到了但不稳定（通常是被遮挡）</li>
+<li>Fixed → 一切正常</li>
+</ul>
+<hr>
+<h2 id="四、快速排错清单"><a href="#四、快速排错清单" class="headerlink" title="四、快速排错清单"></a>四、快速排错清单</h2><p>以后遇到定位异常，按这个顺序查：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1. DTU 指示灯 → 绿灯常亮？</span><br><span class="line">   ├─ 否 → 查 SIM 卡、APN、4G 信号</span><br><span class="line">   └─ 是 → 继续 ↓</span><br><span class="line"></span><br><span class="line">2. 串口线 → DTU→IMU 接好了吗？</span><br><span class="line">   ├─ 松了 → 重插</span><br><span class="line">   └─ 正常 → 继续 ↓</span><br><span class="line"></span><br><span class="line">3. IMU IP → 192.168.86.72 配对了？</span><br><span class="line">   ├─ 没 → AT 指令重新配置</span><br><span class="line">   └─ 正确 → 继续 ↓</span><br><span class="line"></span><br><span class="line">4. NTRIP 挂载点 → 挂载点名称正确？</span><br><span class="line">   ├─ 没 → 问带教</span><br><span class="line">   └─ 正确 → 继续 ↓</span><br><span class="line"></span><br><span class="line">5. 天线环境 → 室外？开阔？</span><br><span class="line">   ├─ 遮挡 → 换位置</span><br><span class="line">   └─ 开阔 → 重新标定</span><br></pre></td></tr></table></figure>
+
+<hr>
+<blockquote>
+<p>📝 本文会持续更新，遇到新问题就追加进来。最后更新时间：2026-07-15</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://lzr-yctf1883.top">小陆</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://lzr-yctf1883.top/2026/07/15/%E5%AE%9E%E4%B9%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5/">https://lzr-yctf1883.top/2026/07/15/%E5%AE%9E%E4%B9%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://lzr-yctf1883.top" target="_blank">陆泽榕的个人Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6/">自动驾驶</a><a class="post-meta__tags" href="/tags/%E5%AE%9E%E4%B9%A0/">实习</a><a class="post-meta__tags" href="/tags/RTK/">RTK</a><a class="post-meta__tags" href="/tags/DTU/">DTU</a><a class="post-meta__tags" href="/tags/IMU/">IMU</a><a class="post-meta__tags" href="/tags/%E6%8E%92%E9%94%99/">排错</a></div><div class="post-share"><div class="social-share" data-image="/lzr.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/" title="自动驾驶部署速查手册 — IP地址、端口、配置参数"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">自动驾驶部署速查手册 — IP地址、端口、配置参数</div></div><div class="info-2"><div class="info-item-1">一、总览：系统拓扑123456RTK基站 → 4G → DTU(MD-649) → 串口 → IMU(BY_Connect)                                        ↓                              交换机(车载) ← 激光雷达×4                              ↙        ↘                    A核(.11)              B核(.12)                控制/感知/规划            定位/融合  二、所有 IP 地址速查2.1 车载设备 IP   设备 IP 地址 端口&#x2F;说明    A核（数据融合） 192.168.86.11 root &#x2F; launch   B核（视觉AI） 192.168.86.12 root &#x2F; launch   EC-GC270 维护口 192.168.86.2 echiev &#x2F; launch   IMU（北云） 192.168.86.72 TCP 端口 22...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/07/14/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%AE%9E%E4%B9%A0%E7%AC%94%E8%AE%B0-Day1/" title="自动驾驶实习笔记-Day1-2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-14</div><div class="info-item-2">自动驾驶实习笔记-Day1-2</div></div><div class="info-2"><div class="info-item-1">Day 1：环境搭建与硬件认知工作流程 上午：阅读部署文档 + 安装软件环境 下午：实车操作，熟悉硬件架构  装了的软件   软件 用途    RSView 激光雷达点云可视化   MobaXterm SSH 终端 + 文件传输   Wireshark 网络抓包（标定用）   AutoDriver 实时监控各模块运行状态   规划工具 读取规划配置   BY_Connect 配置北云 IMU   dtucfg2 配置驿唐 DTU   车载硬件拓扑123RTK 基站 → 4G → DTU(黑) → 串口 → IMU(白) → 网线 → 交换机 → EC-GC270 域控激光雷达 ×4 ──────────────网线───────────→ 交换机笔记本 ──────────────────网线───────────→ 交换机     硬件 IP 作用    EC-GC270 A 核 (RK3588) 192.168.86.11 感知、规划、控制   EC-GC270 B 核 (Journey 2) 192.168.86.12 定位、融合   激光雷达 ×4 .5 &#x2F; ....</div></div></div></a><a class="pagination-related" href="/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/" title="自动驾驶部署速查手册 — IP地址、端口、配置参数"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-15</div><div class="info-item-2">自动驾驶部署速查手册 — IP地址、端口、配置参数</div></div><div class="info-2"><div class="info-item-1">一、总览：系统拓扑123456RTK基站 → 4G → DTU(MD-649) → 串口 → IMU(BY_Connect)                                        ↓                              交换机(车载) ← 激光雷达×4                              ↙        ↘                    A核(.11)              B核(.12)                控制/感知/规划            定位/融合  二、所有 IP 地址速查2.1 车载设备 IP   设备 IP 地址 端口&#x2F;说明    A核（数据融合） 192.168.86.11 root &#x2F; launch   B核（视觉AI） 192.168.86.12 root &#x2F; launch   EC-GC270 维护口 192.168.86.2 echiev &#x2F; launch   IMU（北云） 192.168.86.72 TCP 端口 22...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/lzr.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">小陆</div><div class="author-info-description">CS本科 · 自动驾驶实习 · Java/AI方向</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/YCTF1883"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://lzr-yctf1883.top" target="_blank" title="博客"><i class="fas fa-blog"></i></a><a class="social-icon" href="https://github.com/YCTF1883" target="_blank" title="GitHub"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">🚗 自动驾驶现场部署实习生<br>📝 记录学习与成长</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81GNSS-%E5%AE%9A%E4%BD%8D%E7%8A%B6%E6%80%81%E9%80%9F%E6%9F%A5"><span class="toc-number">1.</span> <span class="toc-text">一、GNSS 定位状态速查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81RTK-%E5%B7%AE%E5%88%86%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">二、RTK 差分数据链路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%812026-07-15-%E6%8E%92%E9%94%99%E8%AE%B0%E5%BD%95"><span class="toc-number">3.</span> <span class="toc-text">三、2026-07-15 排错记录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E8%B1%A1"><span class="toc-number">3.1.</span> <span class="toc-text">现象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%92%E9%94%99%E8%BF%87%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">排错过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E5%9B%A0%EF%BC%88%E5%BE%85%E5%AE%8C%E5%85%A8%E7%A1%AE%E8%AE%A4%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">根因（待完全确认）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%8F%E9%AA%8C%E6%95%99%E8%AE%AD"><span class="toc-number">3.4.</span> <span class="toc-text">经验教训</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%BF%AB%E9%80%9F%E6%8E%92%E9%94%99%E6%B8%85%E5%8D%95"><span class="toc-number">4.</span> <span class="toc-text">四、快速排错清单</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/15/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E9%83%A8%E7%BD%B2%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C-IP%E7%AB%AF%E5%8F%A3%E9%85%8D%E7%BD%AE/" title="自动驾驶部署速查手册 — IP地址、端口、配置参数">自动驾驶部署速查手册 — IP地址、端口、配置参数</a><time datetime="2026-07-14T16:00:00.000Z" title="发表于 2026-07-15 00:00:00">2026-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/15/%E5%AE%9E%E4%B9%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5/" title="实习常见问题速查 — GNSS定位状态、RTK链路排错">实习常见问题速查 — GNSS定位状态、RTK链路排错</a><time datetime="2026-07-14T16:00:00.000Z" title="发表于 2026-07-15 00:00:00">2026-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/14/%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E5%AE%9E%E4%B9%A0%E7%AC%94%E8%AE%B0-Day1/" title="自动驾驶实习笔记-Day1-2">自动驾驶实习笔记-Day1-2</a><time datetime="2026-07-13T16:00:00.000Z" title="发表于 2026-07-14 00:00:00">2026-07-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/14/Linux%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/" title="Linux 常用命令速查手册（自动驾驶现场部署实战版）">Linux 常用命令速查手册（自动驾驶现场部署实战版）</a><time datetime="2026-07-13T16:00:00.000Z" title="发表于 2026-07-14 00:00:00">2026-07-14</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By 小陆</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.5"></script><script src="/js/main.js?v=5.5.5"></script><div class="js-pjax"></div><style>/*全站蓝绿磨砂*/.card-widget,.recent-post-item,#post,#page,#archive,#category,#tag,#rightside,#toc,#pagination .page-number,#pagination .extend{backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)}#nav{backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);background:rgba(255,255,255,.62)!important;border-bottom:1px solid rgba(32,178,170,.18)}[data-theme="dark"]<script id="canvas_nest" defer="defer" color="32,178,170" opacity="0.6" zIndex="-1" count="80" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="false" data-text="🚗,🚀,💪,✨,📝,🎯,🌟,🔥" data-fontsize="18px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
