@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: LZR's Blog
+title: 陆泽榕的个人Blog
 subtitle: '记录学习与成长'
 description: 'CS本科 · 自动驾驶实习 · Java/AI方向'
 keywords: 自动驾驶, Java, AI, 实习, 博客
-author: LZR
+author: 小陆
 language: zh-CN
 timezone: 'Asia/Shanghai'
 
@@ -96,7 +96,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: butterfly
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

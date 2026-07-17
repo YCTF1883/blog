@@ -1,0 +1,6 @@
+top:
+  - class_name: heatmap-widget
+    id_name: heatmap-widget
+    icon: fas fa-calendar-check
+    name: 发文热力图
+    html: <div id="blog-heatmap"></div>
